@@ -1,0 +1,84 @@
+<Screen xmlns="www.team-mediaportal.com/2008/mpf/directx" 
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:collections="clr-namespace:MediaPortal.UI.Presentation.DataObjects;assembly=MediaPortal.UI"
+        Context="{Model Id=C6B0FA5A-288E-405A-A5D5-AA66CC0AA327}">
+    <Screen.Resources>
+        <Storyboard x:Key="Storyboard" BeginTime="00:00:00.000" Duration="00:00:10.000">
+            <DoubleAnimation Storyboard.TargetName="RotateImage" 
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" 
+                             From="0" To="360" BeginTime="00:00:05.000" Duration="00:00:05.000" />
+            <DoubleAnimation Storyboard.TargetName="OpacityImage" 
+                             Storyboard.TargetProperty="Opacity" 
+                             From="1" To="0" Duration="00:00:10.000" />
+        </Storyboard>
+        <DataTemplate x:Key="ItemDataTemplate" DataType="{x:Type collections:ListItem}">
+            <Canvas>
+                <Grid Canvas.Left="{Binding LeftProperty}" Canvas.Top="{Binding TopProperty}">
+                    <Grid.RenderTransform>
+                        <TransformGroup>
+                            <RotateTransform CenterX="{Binding RotateXProperty}" CenterY="{Binding RotateYProperty}" Angle="{Binding RotateAngleProperty}" />
+                        </TransformGroup>
+                    </Grid.RenderTransform>
+                    <Border x:Name="PictureBorder" MaxWidth="{Binding Path=PictureWidthProperty}"
+                            MaxHeight="{Binding Path=PictureHeightProperty}"
+                            HorizontalAlignment="Left" VerticalAlignment="Top" >
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding Path=BorderImageProperty}" Tile="Tile"/>
+                        </Border.Background>
+                        <Image Stretch="Uniform" Margin ="{Binding Path=PictureBorderMarginsProperty}" Thumbnail="false" Source="{Binding Path=PictureImageProperty}">
+                            <!--Can't use this until the fix is merged to master MP2 Alpha 4-->
+                            <!--<Image.Source>
+                                <BitmapImageSource DecodePixelWidth="{Binding Path=PictureWidthProperty}" UriSource="{Binding Path=PictureImageProperty}"/>
+                            </Image.Source>-->
+                            <!--<Image.Style>
+                                <Style.Triggers>
+                                    <Trigger Property="Image.IsEnabled" Value="True">
+                                        --><!--<BeginStoryboard Storyboard="{ThemeResource Storyboard}" />--><!--
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                                Storyboard.TargetProperty="RenderTransform.Angle"
+                                                                From="0"
+                                                                To="360"
+                                                                Duration="0:0:1"
+                                                                RepeatBehavior="Forever" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Image.Style>-->
+                        </Image>
+                    </Border>
+                    <Label x:Name="PictureLabel" Content="{Binding Path=PictureDateProperty}" 
+                          HorizontalAlignment="Center" VerticalAlignment="Bottom" 
+                          Color="{Binding Path=PictureDateColorProperty}" FontSize="{Binding Path=PictureDateFontSizeProperty}"/>
+                </Grid>
+            </Canvas>
+        </DataTemplate>
+        <Style x:Key="ListViewStyle" BasedOn="{ThemeResource DefaultListViewStyle}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListView}">
+                            <ItemsPresenter VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>  
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemTemplate" Value="{ThemeResource ItemDataTemplate}"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <Grid x:Name="ListItemsHost" IsItemsHost="True"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Screen.Resources>       
+    <Canvas>
+        <Canvas.Background>
+            <ImageBrush ImageSource="{Binding Path=SlideshowBackgroundProperty}" Stretch="Fill"/>
+        </Canvas.Background>
+        <ListView Style="{ThemeResource ListViewStyle}" ItemsSource="{Binding Path=PictureList}"/>         
+    </Canvas>
+</Screen>
